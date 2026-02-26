@@ -1,16 +1,15 @@
 from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp.settings import TransportSecuritySettings # Add this import
 
 mcp = FastMCP(
     name="hello-server",
     stateless_http=True,
 )
 
-# Fix for HF Spaces — disable host header validation
-mcp.settings.host = "0.0.0.0"
-
-# Patch the allowed hosts directly on the settings
-if hasattr(mcp.settings, 'allowed_hosts'):
-    mcp.settings.allowed_hosts = ["*"]
+# Fix: Explicitly disable DNS rebinding protection for proxy environments
+mcp.settings.transport_security = TransportSecuritySettings(
+    enable_dns_rebinding_protection=False
+)
 
 @mcp.tool()
 def hello(name: str) -> str:
