@@ -3,8 +3,14 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP(
     name="hello-server",
     stateless_http=True,
-    allowed_hosts=["hamzah-syed-mcp-learning-p1.hf.space", "localhost", "0.0.0.0"],
 )
+
+# Fix for HF Spaces — disable host header validation
+mcp.settings.host = "0.0.0.0"
+
+# Patch the allowed hosts directly on the settings
+if hasattr(mcp.settings, 'allowed_hosts'):
+    mcp.settings.allowed_hosts = ["*"]
 
 @mcp.tool()
 def hello(name: str) -> str:
